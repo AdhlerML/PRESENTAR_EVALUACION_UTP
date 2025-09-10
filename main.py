@@ -1,38 +1,62 @@
-import random as rd
+# limpiar_csv_simple.py
+# Objetivo: leer CSV "sucio", limpiar y guardar "limpio" con:
+# - timestamp en formato ISO YYYY-MM-DDTHH:MM:SS
+# - value como float con punto y 3 decimales
+# - separador de salida: coma
+# - filas inválidas: se saltan
 
-def conversor(V):
-    """una funcion que recibe voltaje y retorna los valores de temperatura
+#para lectura de varios archivos se usa el For y tambien el comando *.csv
+import csv
+from datetime import datetime
+from pathlib import Path #importo el comando path (busca el lugar del codigo)
 
-    Args:
-        V (float) / no tiene que ser una lista: voltaje de ingreso y que se cambiara a tempratura
-    """
-    Temp=12*V-15
-    return Temp
 
-def aleatorio(n=20):
-    """genera numeros aleatorios, si no se indica el numero se generan automaticamente 20 valores
+#Path - ruta de acceso
+ROOT = Path(__file__).resolve().parents[0]  # sube desde src/ a la raíz del proyecto C:\Users\BP_motta\python_UTP\UTP_Py
+TXT  = ROOT / "DATOS"
+IN_FILE=TXT / "sucio.csv" #archivo de Ingreso
+OUT_FILE=TXT /"limpio.csv" #archivo de Salida
+#apertura de archivos
+with open(IN_FILE,'r', encoding="utf-8", newline="") as fin,\
+    open(OUT_FILE, "w", encoding="utf-8", newline="") as fout:
+    reader = csv.DictReader(fin, delimiter=';')       # usa ',' si tu archivo lo requiere
+    writer = csv.DictWriter(fout, fieldnames=["timestamp", "value"]) #crea el archivo y su cabera
+    writer.writeheader()
+#leer linea por lineal y seleccionar en crudo raw 
+    total = kept = 0
+    for row in reader:
+        total += 1
+        ts_raw  = (row.get("timestamp") or "").strip()
+        val_raw = (row.get("value") or "").strip()
+#limpiar datos
+        val_raw = val_raw.replace(",", ".")
+        val_low = val_raw.lower()
+        if val_low in {"", "na", "n/a", "nan", "null", "none", "error"}:
+            continue  # saltar fila
+        try:
+            val = float(val_raw)
+        except ValueError:
+            continue  # saltar fila si no es número
+#limpieza de datos de tiempo 
+        ts_clean = None
+        for fmt in ("%Y-%m-%dT%H:%M:%S", "%d/%m/%Y %H:%M:%S"):
+            try:
+                dt = datetime.strptime(ts_raw, fmt)
+                ts_clean = dt.strftime("%Y-%m-%dT%H:%M:%S")
+                break
+            except ValueError:
+                pass
+#milisegundo (opcional)
+        if ts_clean is None and "T" in ts_raw and len(ts_raw) >= 19:
+            try:
+                dt = datetime.strptime(ts_raw[:19], "%Y-%m-%dT%H:%M:%S")
+                ts_clean = dt.strftime("%Y-%m-%dT%H:%M:%S")
+            except ValueError:
+                ts_clean = None
 
-    Args:
-        n (int, optional): numero de valores aleatorios - si no se indica genera 20
-    """
-    Vingreso=[] #lista vacia
-    for i in range (n): #incio de un bucle es con el : el identado es importante
-        Vingreso.append(rd.randint(1,30)) #append añade a la lista\
-    return(Vingreso)
+        if ts_clean is None:
+            continue  # saltar fila si no pudimos interpretar la fecha
 
-def clasificar_alerta(temp_c, umbral=100.0):
-    """Devuelve 'ALERTA' si temp_c > umbral, si no 'OK'."""
-    return "ALERTA" if temp_c > umbral else "OK"
-    
-def main():
-    """Solo se ejecuta cuando corres este archivo directamente."""
-    valores = aleatorio(30)
-    temperaturas = [conversor(v) for v in valores]
-    alertas = [clasificar_alerta(t, 150) for t in temperaturas]
-    print("Voltajes:", valores)
-    print("Temperaturas:", [round(t, 2) for t in temperaturas])
-    print("Alertas:", alertas)
-
-#para usar las paqueterias internas (def) del programa en otro programa
-if __name__ == "__main__":
-    main()  # solo se ejecuta al correr: python s4_pipeline.py
+#grabar datos en writer
+        writer.writerow({"timestamp": ts_clean, "value": f"{val:.2f}"})
+        kept += 1 #sume 1 kept, en nuestro caso cambia de fila
