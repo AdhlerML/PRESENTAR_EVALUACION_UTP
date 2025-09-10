@@ -1,2 +1,2 @@
 def evaluar_control(val):
-    return "CUIDADO" if val >= 5 else "OK"
+    return "PRECAUCION" if val >= 5 else "ESTA BIEN"
