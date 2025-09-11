@@ -7,4 +7,4 @@ Mi codigo lo realice de manera organizada y aplicando funciones para que pueda s
 
 ## Imagen de la UTP
 
-!Logo utp
+![Logo UTP](img/utp.png)
