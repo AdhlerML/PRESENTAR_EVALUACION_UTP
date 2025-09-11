@@ -16,9 +16,9 @@ def calcular_kpis(filas_totales, filas_validas, descartes_ts, descartes_valor, t
     
     kpis_temp = {
         "n": n,
-        "temp_min": temp_min,
-        "temp_max": temp_max,
-        "temp_prom": round(temp_prom, 2) if temp_prom else None,
+        "temp_min en C": temp_min,
+        "temp_max en C": temp_max,
+        "temp_prom en C": round(temp_prom, 2) if temp_prom else None,
         "alertas": alertas,
     }
     
