@@ -10,7 +10,7 @@ def obtener_rutas():
 
     
     in_file = ROOT /  "DATA" / "RAW" / "sucio.csv"
-    out_file = ROOT /  "DATA" / "PROCESSED" / "limpio.csv"
+    out_file = ROOT /  "DATA" / "PROCESSED" / "Temperaturas_Procesado.csv"
     return in_file, out_file
 
 # Limpieza de valor

@@ -9,6 +9,7 @@ def limpiar_valor(val_raw):
     except ValueError:
         return None
 
+# Limpieza de timestamp
 def limpiar_timestamp(ts_raw):
     ts_raw = ts_raw.strip()
     formatos = ["%Y-%m-%dT%H:%M:%S", "%d/%m/%Y %H:%M:%S"]
