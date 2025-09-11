@@ -10,6 +10,8 @@ Mi codigo consiste en leer archivos .csv y poder limpiarlos, organizarlos de man
 
 Mi codigo lo realice de manera organizada y aplicando funciones para que pueda ser reutilizable para proyectos futuros. Estas funciones las dividi en partes y las guarde en una caperta llamada SRC /FUNCION. Ademas mi funcion principal, donde se aplicara todo se llama main y esta guardada en la carpeta llamada SRC. muchas gracias.
 
+AQUI DEJO MI GITHUB : 
+https://github.com/AdhlerML/Proyecto_lab
 
 
 
